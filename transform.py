@@ -105,3 +105,37 @@ def V2ld(V):
             lf[indexi + j] = (V[index1 + j] - soma) / d[j]
         d[i] -= np.sum(d[:i] * vecti**2)
     return lf, d
+
+
+def L2Linv(L):
+    UF.VerifyValidL(L)
+    n = L.shape[0]
+    A = -np.copy(L)
+
+    for i in range(n):
+        for j in range(i - 1, -1, -1):
+            # soma = 0
+            # for k in range(j + 1, i):
+            #     soma += A[i, k] * L[k, j]
+            A[i, j] -= np.sum(A[i, j + 1:i] * L[j + 1:i, j])
+
+    for i in range(n):
+        A[i, i] = 1
+        for j in range(i + 1, n):
+            A[i, j] = 0
+    return A
+
+
+def l2linv(lf):
+    UF.VerifyValidV(lf)
+    n = int(np.floor(np.sqrt(2 * len(lf)))) + 1
+    lfinv = -np.copy(lf)
+    for i in range(n):
+        indexi = i * (i - 1) // 2
+        for j in range(i - 1, -1, -1):
+            soma = 0
+            for k in range(j + 1, i):
+                indexk = k * (k - 1) // 2
+                soma += lfinv[indexi + k] * lf[j + indexk]
+            lfinv[indexi + j] -= soma
+    return lfinv

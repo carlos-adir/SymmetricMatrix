@@ -1,6 +1,26 @@
 import numpy as np
 
 
+def getRandomSymmetricMatrix(n):
+    A = np.random.rand(n, n)
+    return A + np.transpose(A)
+
+
+def getRandomLowerMatrix(n):
+    L = np.random.rand(n, n)
+    for i in range(n):
+        L[i, i] = 1
+        for j in range(i + 1, n):
+            L[i, j] = 0
+    return L
+
+
+def getRandomV(n):
+    size = int(n * (n + 1) / 2)
+    V = np.random.rand(size)
+    return V
+
+
 def isNumpyArray(M):
     if not isinstance(M, np.ndarray):
         try:

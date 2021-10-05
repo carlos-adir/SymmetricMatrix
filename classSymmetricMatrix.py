@@ -78,6 +78,19 @@ class SymmetricMatrix:
     def n(self):
         return self.__n
 
+    def getLinv(self):
+        linv = transform.l2linv(self.l)
+        return transform.l2L(linv)
+
+    def inv(self):
+        Linv = self.getLinv()
+        if np.any(self.d == 0):
+            errormsg = "Impossible Invert Singular Matrix: det(M) = 0"
+            raise ValueError(errormsg)
+        dinv = 1 / self.d
+        Dinv = np.diag(dinv)
+        return np.transpose(Linv) @ Dinv @ Linv
+
     def __add__(self, S):
         if not isinstance(S, SymmetricMatrix):
             raise Exception("Can sum only symmetric matrix")

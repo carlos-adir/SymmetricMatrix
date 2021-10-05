@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 from classSymmetricMatrix import SymmetricMatrix
+import UsefulFunctions as UF
 import transform
 
 
@@ -19,11 +20,11 @@ def test_VerifyReadValues():
          [2, 3, 5],
          [4, 5, 6]]
     S = SymmetricMatrix(M)
-    np.testing.assert_allclose(S.M, M)
+    np.testing.assert_array_almost_equal(S.M, M)
 
     V = [1, 2, 3, 4, 5, 6]
     S = SymmetricMatrix(V)
-    np.testing.assert_allclose(S.V, V)
+    np.testing.assert_array_almost_equal(S.V, V)
 
 
 def test_ConversionWithKnowValues_1():
@@ -50,31 +51,31 @@ def test_ConversionWithKnowValues_1():
     # Using M as constructor
     S = SymmetricMatrix(M)
 
-    np.testing.assert_allclose(n, S.n)
-    np.testing.assert_allclose(M, S.M)
-    np.testing.assert_allclose(V, S.V)
-    np.testing.assert_allclose(L, S.L)
-    np.testing.assert_allclose(D, S.D)
-    np.testing.assert_allclose(l, S.l)
-    np.testing.assert_allclose(d, S.d)
+    np.testing.assert_array_almost_equal(n, S.n)
+    np.testing.assert_array_almost_equal(M, S.M)
+    np.testing.assert_array_almost_equal(V, S.V)
+    np.testing.assert_array_almost_equal(L, S.L)
+    np.testing.assert_array_almost_equal(D, S.D)
+    np.testing.assert_array_almost_equal(l, S.l)
+    np.testing.assert_array_almost_equal(d, S.d)
     LDL = L @ D @ L.T
     SLDL = S.L @ S.D @ (S.L).T
-    np.testing.assert_allclose(LDL, M)
-    np.testing.assert_allclose(SLDL, S.M)
+    np.testing.assert_array_almost_equal(LDL, M)
+    np.testing.assert_array_almost_equal(SLDL, S.M)
 
     # Using V as constructor
     S = SymmetricMatrix(V)
-    np.testing.assert_allclose(n, S.n)
-    np.testing.assert_allclose(M, S.M)
-    np.testing.assert_allclose(V, S.V)
-    np.testing.assert_allclose(L, S.L)
-    np.testing.assert_allclose(D, S.D)
-    np.testing.assert_allclose(l, S.l)
-    np.testing.assert_allclose(d, S.d)
+    np.testing.assert_array_almost_equal(n, S.n)
+    np.testing.assert_array_almost_equal(M, S.M)
+    np.testing.assert_array_almost_equal(V, S.V)
+    np.testing.assert_array_almost_equal(L, S.L)
+    np.testing.assert_array_almost_equal(D, S.D)
+    np.testing.assert_array_almost_equal(l, S.l)
+    np.testing.assert_array_almost_equal(d, S.d)
     LDL = L @ D @ L.T
     SLDL = S.L @ S.D @ (S.L).T
-    np.testing.assert_allclose(LDL, M)
-    np.testing.assert_allclose(SLDL, S.M)
+    np.testing.assert_array_almost_equal(LDL, M)
+    np.testing.assert_array_almost_equal(SLDL, S.M)
 
 
 def test_ConversionWithKnowValues_2():
@@ -106,41 +107,38 @@ def test_ConversionWithKnowValues_2():
 
     # # Using M as constructor
     S = SymmetricMatrix(M)
-    np.testing.assert_allclose(n, S.n)
-    np.testing.assert_allclose(M, S.M)
-    np.testing.assert_allclose(V, S.V)
-    np.testing.assert_allclose(L, S.L)
-    np.testing.assert_allclose(D, S.D)
-    np.testing.assert_allclose(l, S.l)
-    np.testing.assert_allclose(d, S.d)
+    np.testing.assert_array_almost_equal(n, S.n)
+    np.testing.assert_array_almost_equal(M, S.M)
+    np.testing.assert_array_almost_equal(V, S.V)
+    np.testing.assert_array_almost_equal(L, S.L)
+    np.testing.assert_array_almost_equal(D, S.D)
+    np.testing.assert_array_almost_equal(l, S.l)
+    np.testing.assert_array_almost_equal(d, S.d)
     LDL = L @ D @ L.T
     SLDL = S.L @ S.D @ (S.L).T
-    np.testing.assert_allclose(LDL, M)
-    np.testing.assert_allclose(SLDL, S.M)
+    np.testing.assert_array_almost_equal(LDL, M)
+    np.testing.assert_array_almost_equal(SLDL, S.M)
 
     # Using V as constructor
     S = SymmetricMatrix(V)
-    np.testing.assert_allclose(n, S.n)
-    np.testing.assert_allclose(M, S.M)
-    np.testing.assert_allclose(V, S.V)
-    np.testing.assert_allclose(L, S.L)
-    np.testing.assert_allclose(D, S.D)
-    np.testing.assert_allclose(l, S.l)
-    np.testing.assert_allclose(d, S.d)
+    np.testing.assert_array_almost_equal(n, S.n)
+    np.testing.assert_array_almost_equal(M, S.M)
+    np.testing.assert_array_almost_equal(V, S.V)
+    np.testing.assert_array_almost_equal(L, S.L)
+    np.testing.assert_array_almost_equal(D, S.D)
+    np.testing.assert_array_almost_equal(l, S.l)
+    np.testing.assert_array_almost_equal(d, S.d)
     LDL = L @ D @ L.T
     SLDL = S.L @ S.D @ (S.L).T
-    np.testing.assert_allclose(LDL, M)
-    np.testing.assert_allclose(SLDL, S.M)
+    np.testing.assert_array_almost_equal(LDL, M)
+    np.testing.assert_array_almost_equal(SLDL, S.M)
 
 
 def test_ConversionWithRandomValues():
     Ntests = 10
     for i in range(Ntests):
         for n in range(2, 10):
-            A = np.random.rand(n, n)
-            # We transform a random array into a symmetric array
-            # by summing the transpose
-            M = A + np.transpose(A)
+            M = UF.getRandomSymmetricMatrix(n)
 
             Sym = SymmetricMatrix(M)
 
@@ -149,16 +147,21 @@ def test_ConversionWithRandomValues():
             D = np.diag(d)
             l = transform.L2l(L)
 
-            np.testing.assert_allclose(M, Sym.M)
-            np.testing.assert_allclose(V, Sym.V)
-            np.testing.assert_allclose(l, Sym.l)
-            np.testing.assert_allclose(d, Sym.d)
-            np.testing.assert_allclose(L, Sym.L)
-            np.testing.assert_allclose(D, Sym.D)
+            np.testing.assert_array_almost_equal(M, Sym.M)
+            np.testing.assert_array_almost_equal(V, Sym.V)
+            np.testing.assert_array_almost_equal(l, Sym.l)
+            np.testing.assert_array_almost_equal(d, Sym.d)
+            np.testing.assert_array_almost_equal(L, Sym.L)
+            np.testing.assert_array_almost_equal(D, Sym.D)
 
 
-test_Construction()
-test_VerifyReadValues()
-test_ConversionWithKnowValues_1()
-test_ConversionWithKnowValues_2()
-# test_ConversionWithRandomValues()
+def test_InverseOfSymmetricMatrix():
+    Ntests = 1000
+    nmax = 10
+    for i in range(Ntests):
+        for n in range(2, nmax + 1):
+            M = UF.getRandomSymmetricMatrix(n)
+            Sym = SymmetricMatrix(M)
+            Minv = Sym.inv()
+            np.testing.assert_array_almost_equal(Minv @ M, np.eye(n))
+            np.testing.assert_array_almost_equal(Minv @ M, np.eye(n))

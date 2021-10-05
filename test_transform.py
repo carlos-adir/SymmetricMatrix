@@ -1,6 +1,7 @@
-import numpy as np
 import pytest
+import numpy as np
 import transform
+import UsefulFunctions as UF
 
 
 def test_transformationMintoV():
@@ -89,15 +90,13 @@ def test_transformationVintoM():
 
 def test_creationWithRandomMatrix():
     for n in range(2, 10):
-        A = np.random.rand(n, n)
-        Mgood = A + np.transpose(A)
+        Mgood = UF.getRandomSymmetricMatrix(n)
         Vtest = transform.M2V(Mgood)
         Mtest = transform.V2M(Vtest)
         np.testing.assert_allclose(Mgood, Mtest)
 
     for n in range(2, 10):
-        size = int(n * (n + 1) / 2)
-        Vgood = np.random.rand(size)
+        Vgood = UF.getRandomV(n)
         Mtest = transform.V2M(Vgood)
         Vtest = transform.M2V(Mtest)
         np.testing.assert_allclose(Vgood, Vtest)
@@ -116,11 +115,7 @@ def test_transformationLDLwithRandom():
     Ntests = 100
     for i in range(Ntests):
         for n in range(2, 10):
-            Lgood = np.random.rand(n, n)
-            for k in range(n):
-                Lgood[k, k] = 1
-                for j in range(k + 1, n):
-                    Lgood[k, j] = 0
+            Lgood = UF.getRandomLowerMatrix(n)
             dgood = np.random.rand(n)
             M = Lgood @ np.diag(dgood) @ Lgood.T
             Ltest, dtest = transform.M2Ld(M)
@@ -206,8 +201,7 @@ def test_transformation_V2ld_withRandomValues():
     Ntests = 100
     for i in range(Ntests):
         for n in range(2, 10):
-            M = np.random.rand(n, n)
-            M += np.transpose(M)
+            M = UF.getRandomSymmetricMatrix(n)
             V = transform.M2V(M)
 
             L, dgood = transform.M2Ld(M)
@@ -216,3 +210,30 @@ def test_transformation_V2ld_withRandomValues():
             ltest, dtest = transform.V2ld(V)
             np.testing.assert_allclose(lgood, ltest)
             np.testing.assert_allclose(dgood, dtest)
+
+
+def test_transformation_L2Linv_withRandomValues():
+    Ntests = 100
+    nmax = 10
+    for i in range(Ntests):
+        for n in range(2, nmax + 1):
+            L = UF.getRandomLowerMatrix(n)
+            Linv = transform.L2Linv(L)
+            np.testing.assert_array_almost_equal(L @ Linv, np.eye(n))
+            np.testing.assert_array_almost_equal(Linv @ L, np.eye(n))
+
+
+def test_transformation_l2linv_withRandomValues():
+    Ntests = 100
+    nmax = 10
+    for i in range(Ntests):
+        for n in range(2, nmax + 1):
+            M = UF.getRandomSymmetricMatrix(n)
+            V = transform.M2V(M)
+            l, d = transform.V2ld(V)
+            linv = transform.l2linv(l)
+
+            L = transform.l2L(l)
+            Linv = transform.l2L(linv)
+            np.testing.assert_array_almost_equal(Linv @ L, np.eye(n))
+            np.testing.assert_array_almost_equal(L @ Linv, np.eye(n))
